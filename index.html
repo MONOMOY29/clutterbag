@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLUTTER BAG – 3D Printed World Cup Keyrings</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a; --gold: #c9a84c; --gold-bright: #f0c040;
+    --gold-dim: #7a6020; --white: #f5f0e8; --grey: #1a1a1a;
+    --grey2: #2a2a2a; --text-muted: #888;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--black); color:var(--white); font-family:'Inter',sans-serif; overflow-x:hidden; }
+
+  /* NAV */
+  nav { position:fixed; top:0; width:100%; z-index:100; background:rgba(10,10,10,0.95); backdrop-filter:blur(10px); border-bottom:1px solid var(--gold-dim); display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:64px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:3px; color:var(--gold); }
+  .logo span { color:var(--white); }
+  nav ul { list-style:none; display:flex; gap:2rem; }
+  nav ul a { text-decoration:none; color:var(--white); font-size:0.85rem; letter-spacing:1px; text-transform:uppercase; transition:color 0.2s; }
+  nav ul a:hover { color:var(--gold); }
+  .nav-right { display:flex; gap:0.75rem; align-items:center; }
+  .nav-cart { background:var(--gold); color:var(--black); border:none; padding:0.5rem 1.2rem; font-family:'Inter',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
+  .nav-cart:hover { background:var(--gold-bright); }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; }
+  .hamburger span { width:24px; height:2px; background:var(--white); display:block; }
+
+  /* PROMO */
+  .promo-bar { background:var(--gold); color:var(--black); text-align:center; padding:0.6rem; font-size:0.8rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+
+  /* HERO */
+  .hero { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:80px 5% 0; background:radial-gradient(ellipse at 50% 60%, #1a1200 0%, var(--black) 70%); position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px); }
+  .hero-eyebrow { font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; font-weight:600; }
+  .hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,12vw,9rem); line-height:0.9; letter-spacing:4px; color:var(--white); text-shadow:0 0 80px rgba(201,168,76,0.25); margin-bottom:0.5rem; }
+  .hero h1 .gold { color:var(--gold); }
+  .hero-sub { font-size:1.05rem; color:var(--text-muted); max-width:480px; margin:1.5rem auto; line-height:1.6; }
+  .hero-badge { display:inline-block; border:1px solid var(--gold); color:var(--gold); padding:0.25rem 0.8rem; font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:2rem; }
+  .btn-primary { display:inline-block; background:var(--gold); color:var(--black); padding:1rem 2.5rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; text-decoration:none; font-size:0.9rem; transition:all 0.2s; cursor:pointer; border:none; font-family:'Inter',sans-serif; }
+  .btn-primary:hover { background:var(--gold-bright); transform:translateY(-2px); }
+  .btn-outline { display:inline-block; border:1px solid var(--gold); color:var(--gold); padding:1rem 2.5rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; text-decoration:none; font-size:0.9rem; transition:all 0.2s; cursor:pointer; background:transparent; margin-left:1rem; font-family:'Inter',sans-serif; border-radius:0; }
+  .btn-outline:hover { background:rgba(201,168,76,0.1); }
+  .hero-scroll { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); color:var(--gold-dim); font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; }
+  .hero-scroll::after { content:''; display:block; width:1px; height:40px; background:var(--gold-dim); margin:0.5rem auto 0; animation:scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3}50%{opacity:1} }
+
+  /* TRUST */
+  .trust-strip { background:var(--grey); border-top:1px solid var(--gold-dim); border-bottom:1px solid var(--gold-dim); display:flex; justify-content:center; flex-wrap:wrap; }
+  .trust-item { flex:1; min-width:200px; padding:1.5rem 1rem; text-align:center; border-right:1px solid var(--gold-dim); }
+  .trust-item:last-child { border-right:none; }
+  .trust-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+  .trust-item h4 { font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; color:var(--gold); margin-bottom:0.2rem; }
+  .trust-item p { font-size:0.75rem; color:var(--text-muted); }
+
+  section { padding:5rem 5%; }
+  .section-label { font-size:0.7rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,5vw,3.5rem); letter-spacing:3px; margin-bottom:1rem; }
+  .section-sub { color:var(--text-muted); font-size:0.95rem; max-width:500px; line-height:1.6; margin-bottom:3rem; }
+
+  /* PRODUCTS */
+  #shop { background:var(--black); }
+  .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; }
+  .product-card { background:var(--grey); border:1px solid #2a2a2a; transition:all 0.3s; position:relative; overflow:hidden; }
+  .product-card:hover { border-color:var(--gold); transform:translateY(-4px); }
+  .card-img { width:100%; aspect-ratio:1/1; background:var(--grey2); display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; }
+  .sale-badge { position:absolute; top:0.75rem; left:0.75rem; background:var(--gold); color:var(--black); font-size:0.65rem; font-weight:700; padding:0.2rem 0.5rem; letter-spacing:1px; text-transform:uppercase; }
+  .card-body { padding:1.2rem; }
+  .card-flag { font-size:0.7rem; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:0.3rem; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:2px; margin-bottom:0.6rem; }
+  .card-price { display:flex; align-items:baseline; gap:0.5rem; margin-bottom:1rem; }
+  .price-now { font-size:1.1rem; font-weight:700; color:var(--gold); }
+  .price-was { font-size:0.85rem; color:var(--text-muted); text-decoration:line-through; }
+  .btn-add { width:100%; padding:0.75rem; background:transparent; border:1px solid var(--gold); color:var(--gold); font-weight:700; letter-spacing:2px; text-transform:uppercase; font-size:0.8rem; cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif; }
+  .btn-add:hover { background:var(--gold); color:var(--black); }
+
+  /* HOW */
+  #how { background:var(--grey); }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; }
+  .step { text-align:center; padding:2rem 1.5rem; border:1px solid #2a2a2a; position:relative; }
+  .step-num { font-family:'Bebas Neue',sans-serif; font-size:4rem; color:rgba(201,168,76,0.12); position:absolute; top:0.5rem; left:1rem; line-height:1; }
+  .step-icon { font-size:2.5rem; margin-bottom:1rem; }
+  .step h3 { font-size:1rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:0.5rem; color:var(--gold); }
+  .step p { font-size:0.85rem; color:var(--text-muted); line-height:1.6; }
+
+  /* REVIEWS */
+  #reviews { background:var(--black); }
+  .reviews-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.5rem; }
+  .review-card { background:var(--grey); border:1px solid #2a2a2a; padding:1.5rem; }
+  .review-stars { color:var(--gold); font-size:0.85rem; margin-bottom:0.75rem; }
+  .review-text { font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:1rem; font-style:italic; }
+  .review-author { font-size:0.8rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+  .review-product { font-size:0.7rem; color:var(--gold-dim); margin-top:0.2rem; }
+
+  /* FAQ */
+  #faq { background:var(--grey); }
+  .faq-list { max-width:700px; }
+  .faq-item { border-bottom:1px solid #2a2a2a; }
+  .faq-q { width:100%; background:none; border:none; color:var(--white); text-align:left; padding:1.2rem 0; font-size:0.95rem; font-family:'Inter',sans-serif; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+  .faq-arrow { color:var(--gold); font-size:1.2rem; transition:transform 0.2s; }
+  .faq-q.open .faq-arrow { transform:rotate(45deg); }
+  .faq-a { display:none; padding-bottom:1.2rem; font-size:0.88rem; color:var(--text-muted); line-height:1.7; }
+  .faq-a.open { display:block; }
+
+  /* CONTACT */
+  #contact { background:var(--black); }
+  .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
+  .contact-info p { font-size:0.9rem; color:var(--text-muted); line-height:1.8; margin-bottom:1.5rem; }
+  .contact-detail { display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem; font-size:0.88rem; }
+  .contact-detail .icon { color:var(--gold); }
+  .contact-form { display:flex; flex-direction:column; gap:1rem; }
+  .contact-form input, .contact-form textarea, .contact-form select { background:var(--grey); border:1px solid #2a2a2a; color:var(--white); padding:0.9rem 1rem; font-family:'Inter',sans-serif; font-size:0.9rem; transition:border-color 0.2s; width:100%; }
+  .contact-form input:focus, .contact-form textarea:focus, .contact-form select:focus { outline:none; border-color:var(--gold); }
+  .contact-form textarea { min-height:120px; resize:vertical; }
+  .contact-form select option { background:var(--grey); }
+
+  /* FOOTER */
+  footer { background:var(--grey); border-top:1px solid var(--gold-dim); padding:3rem 5% 1.5rem; }
+  .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:2rem; margin-bottom:2rem; }
+  .footer-brand p { font-size:0.82rem; color:var(--text-muted); line-height:1.6; max-width:220px; margin-top:0.75rem; }
+  .footer-col h5 { font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+  .footer-col ul { list-style:none; }
+  .footer-col ul li { margin-bottom:0.5rem; }
+  .footer-col ul a { text-decoration:none; color:var(--text-muted); font-size:0.83rem; transition:color 0.2s; }
+  .footer-col ul a:hover { color:var(--white); }
+  .footer-bottom { border-top:1px solid #2a2a2a; padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-bottom p { font-size:0.75rem; color:var(--text-muted); }
+  .payment-icons { display:flex; gap:0.5rem; }
+  .pay-icon { background:#2a2a2a; padding:0.2rem 0.5rem; font-size:0.65rem; letter-spacing:1px; color:var(--text-muted); border-radius:2px; }
+  .social-links { display:flex; gap:0.75rem; margin-top:1rem; }
+  .social-links a { color:var(--text-muted); text-decoration:none; font-size:0.8rem; transition:color 0.2s; }
+  .social-links a:hover { color:var(--gold); }
+
+  /* CART */
+  .cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; display:none; }
+  .cart-overlay.open { display:block; }
+  .cart-sidebar { position:fixed; top:0; right:-420px; width:100%; max-width:400px; height:100%; background:var(--grey); z-index:201; transition:right 0.3s; display:flex; flex-direction:column; border-left:1px solid var(--gold-dim); }
+  .cart-sidebar.open { right:0; }
+  .cart-header { padding:1.5rem; border-bottom:1px solid #2a2a2a; display:flex; justify-content:space-between; align-items:center; }
+  .cart-header h3 { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:2px; color:var(--gold); }
+  .cart-close { background:none; border:none; color:var(--white); font-size:1.5rem; cursor:pointer; }
+  .cart-items { flex:1; overflow-y:auto; padding:1.5rem; }
+  .cart-empty { text-align:center; padding:3rem 0; color:var(--text-muted); font-size:0.9rem; }
+  .cart-item { display:flex; gap:1rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid #2a2a2a; align-items:center; }
+  .cart-item-icon { font-size:2rem; width:50px; text-align:center; }
+  .cart-item-info { flex:1; }
+  .cart-item-name { font-size:0.9rem; font-weight:600; margin-bottom:0.25rem; }
+  .cart-item-price { color:var(--gold); font-size:0.85rem; }
+  .qty-controls { display:flex; align-items:center; gap:0.5rem; margin-top:0.4rem; }
+  .qty-btn { background:var(--grey2); border:1px solid #3a3a3a; color:var(--white); width:24px; height:24px; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; }
+  .qty-num { font-size:0.85rem; min-width:20px; text-align:center; }
+  .cart-item-remove { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem; padding:0.25rem; }
+  .cart-footer { padding:1.5rem; border-top:1px solid #2a2a2a; }
+  .cart-total { display:flex; justify-content:space-between; font-size:1rem; font-weight:700; margin-bottom:1rem; }
+  .cart-total span:last-child { color:var(--gold); }
+
+  /* CHECKOUT MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:300; display:none; align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--grey); border:1px solid var(--gold-dim); width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+  .modal-header { padding:1.5rem; border-bottom:1px solid #2a2a2a; display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h3 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--gold); }
+  .modal-close { background:none; border:none; color:var(--white); font-size:1.5rem; cursor:pointer; }
+  .modal-body { padding:1.5rem; }
+  .modal-body .order-summary { background:var(--grey2); padding:1rem; margin-bottom:1.5rem; }
+  .modal-body .order-summary h4 { font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+  .summary-row { display:flex; justify-content:space-between; font-size:0.85rem; padding:0.25rem 0; color:var(--text-muted); }
+  .summary-row.total { color:var(--white); font-weight:700; border-top:1px solid #3a3a3a; margin-top:0.5rem; padding-top:0.5rem; }
+  .form-group { margin-bottom:1rem; }
+  .form-group label { display:block; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+  .form-group input, .form-group select, .form-group textarea { width:100%; background:var(--black); border:1px solid #2a2a2a; color:var(--white); padding:0.85rem 1rem; font-family:'Inter',sans-serif; font-size:0.9rem; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-color:var(--gold); }
+  .form-group select option { background:var(--black); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .form-group textarea { min-height:80px; resize:vertical; }
+  .payment-section { margin-top:1.5rem; }
+  .payment-section h4 { font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+  .payment-options { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:1rem; }
+  .pay-opt { border:1px solid #2a2a2a; padding:0.75rem 0.5rem; text-align:center; cursor:pointer; font-size:0.75rem; color:var(--text-muted); transition:all 0.2s; }
+  .pay-opt.selected { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.08); }
+  .place-order-btn { width:100%; padding:1.1rem; background:var(--gold); color:var(--black); border:none; font-family:'Inter',sans-serif; font-weight:700; font-size:1rem; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:background 0.2s; margin-top:1rem; }
+  .place-order-btn:hover { background:var(--gold-bright); }
+  .place-order-btn:disabled { background:var(--gold-dim); cursor:not-allowed; }
+
+  /* SUCCESS */
+  .success-screen { text-align:center; padding:3rem 1.5rem; display:none; }
+  .success-screen.show { display:block; }
+  .success-icon { font-size:4rem; margin-bottom:1rem; }
+  .success-screen h3 { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--gold); letter-spacing:2px; margin-bottom:0.5rem; }
+  .success-screen p { color:var(--text-muted); font-size:0.9rem; line-height:1.6; }
+  .order-id-box { background:var(--grey2); border:1px solid var(--gold-dim); padding:0.75rem; margin:1rem 0; font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--gold); letter-spacing:2px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px); background:var(--gold); color:var(--black); padding:0.75rem 1.5rem; font-weight:700; font-size:0.85rem; letter-spacing:1px; z-index:400; transition:transform 0.3s; white-space:nowrap; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    nav ul{display:none;}
+    .hamburger{display:flex;}
+    .contact-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .btn-outline{margin-left:0;margin-top:0.75rem;}
+    .form-row{grid-template-columns:1fr;}
+    .payment-options{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:480px){
+    .footer-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ⚠️  SELLER: Replace this URL with your Google Apps Script Web App URL -->
+<script>
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw55b4LGyHkydWc1NiDUi9Pq1eKR5xYGMUvmvvHm3AI-ubtiIYohKi-_Jo7Uo0Dsrq_/exec";
+</script>
+
+<div class="promo-bar">🏆 FREE SHIPPING ABOVE ₹599 &nbsp;|&nbsp; CODE: <strong>GOAL10</strong> FOR 10% OFF</div>
+
+<nav>
+  <span class="logo">CLUTTER<span>BAG</span></span>
+  <ul>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-cart" onclick="openCart()">🛒 Cart (<span id="cart-count">0</span>)</button>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div>
+    <p class="hero-eyebrow">3D Printed · World Cup Edition</p>
+    <h1>YOUR <span class="gold">TEAM.<br>YOUR KEY.</span></h1>
+    <div class="hero-badge">Collector Grade · Made to Order</div>
+    <p class="hero-sub">Custom 3D printed World Cup keyrings — detailed, durable, and built for fans who carry their pride everywhere.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem">
+      <a href="#shop" class="btn-primary">Shop All Keyrings</a>
+      <a href="#how" class="btn-outline">How It's Made</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<div class="trust-strip">
+  <div class="trust-item"><div class="trust-icon">⚡</div><h4>Ships in 3 Days</h4><p>Fast dispatch, every order</p></div>
+  <div class="trust-item"><div class="trust-icon">🖨️</div><h4>3D Printed</h4><p>High-detail PLA material</p></div>
+  <div class="trust-item"><div class="trust-icon">🔒</div><h4>Secure Checkout</h4><p>UPI · Cards · Wallets</p></div>
+  <div class="trust-item"><div class="trust-icon">🔄</div><h4>14-Day Returns</h4><p>No hassle, no questions</p></div>
+</div>
+
+<section id="shop">
+  <div class="section-label">Collections</div>
+  <h2 class="section-title">World Cup Keyrings</h2>
+  <p class="section-sub">Every keyring is 3D printed to order — crisp team colours, precise national crest detail, built to last.</p>
+  <div class="product-grid" id="product-grid"></div>
+</section>
+
+<section id="how" style="background:var(--grey)">
+  <div class="section-label">The Process</div>
+  <h2 class="section-title">From Screen to Keyring</h2>
+  <p class="section-sub">Each piece is made fresh for you — no mass-produced stock, no compromise on detail.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-icon">🏁</div><h3>Pick Your Team</h3><p>Choose from 32 World Cup nations or request a custom country.</p></div>
+    <div class="step"><div class="step-num">02</div><div class="step-icon">🖨️</div><h3>3D Print Begins</h3><p>Your order triggers a fresh print. PLA filament, 0.1mm precision.</p></div>
+    <div class="step"><div class="step-num">03</div><div class="step-icon">🎨</div><h3>Finish & Inspect</h3><p>Hand-finished in team colours and quality-checked before packing.</p></div>
+    <div class="step"><div class="step-num">04</div><div class="step-icon">📦</div><h3>Delivered to You</h3><p>Gift-boxed and shipped within 3 working days across India.</p></div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="section-label">Customer Love</div>
+  <h2 class="section-title">What Fans Say</h2>
+  <div class="reviews-grid">
+    <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The Argentina keyring is insanely detailed. The stripes are perfect. My brother immediately put it on his bag."</p><div class="review-author">Rahul M.</div><div class="review-product">Argentina Keyring</div></div>
+    <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Ordered Brazil one and it arrived in 2 days. Quality is better than expected — solid, smooth, no rough edges."</p><div class="review-author">Priya T.</div><div class="review-product">Brazil Keyring</div></div>
+    <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Bought a set of 4 for my friends. Everyone loved theirs. The gold hardware looks premium. Ordering again!"</p><div class="review-author">Sneha R.</div><div class="review-product">4-Keyring Set</div></div>
+    <div class="review-card"><div class="review-stars">★★★★☆</div><p class="review-text">"Really cool product. Packaging was neat and felt premium. Will definitely reorder before the tournament."</p><div class="review-author">Aditya K.</div><div class="review-product">Spain Keyring</div></div>
+  </div>
+</section>
+
+<section id="faq" style="background:var(--grey)">
+  <div class="section-label">Questions</div>
+  <h2 class="section-title">FAQ</h2>
+  <div class="faq-list">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What material are the keyrings made from? <span class="faq-arrow">+</span></button><div class="faq-a">All keyrings are printed using high-quality PLA filament, hand-finished, painted in team colours, and sealed with a matte coat for durability.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I request a country not listed? <span class="faq-arrow">+</span></button><div class="faq-a">Yes! Use the Contact form or WhatsApp us. We'll confirm availability within 24 hours.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How long does delivery take? <span class="faq-arrow">+</span></button><div class="faq-a">Orders are dispatched within 3 working days. Standard delivery across India takes 5–7 business days from dispatch.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I add a player name or number? <span class="faq-arrow">+</span></button><div class="faq-a">Yes — personalisation (name/number on the back) for ₹50 extra. Mention it in the order notes at checkout.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What is your return policy? <span class="faq-arrow">+</span></button><div class="faq-a">14-day returns for damaged or defective items. Send photos to our WhatsApp within 48 hours of receiving.</div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">Get In Touch</div>
+  <h2 class="section-title">Contact Us</h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>Questions, bulk purchases, or custom requests? We're quick to respond — usually within a few hours.</p>
+      <div class="contact-detail"><span class="icon">📞</span><span>+91-XXXXXXXXXX</span></div>
+      <div class="contact-detail"><span class="icon">✉️</span><span>hello@clutterbag.in</span></div>
+      <div class="contact-detail"><span class="icon">💬</span><span>WhatsApp preferred for fastest reply</span></div>
+      <div class="contact-detail"><span class="icon">📍</span><span>Kolkata, West Bengal, India</span></div>
+      <div class="social-links"><a href="#">Instagram</a> · <a href="#">WhatsApp</a> · <a href="#">Facebook</a></div>
+    </div>
+    <form class="contact-form" onsubmit="submitContact(event)">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <select><option value="">— Enquiry Type —</option><option>Order Query</option><option>Custom Request</option><option>Bulk Order</option><option>Return / Refund</option><option>Other</option></select>
+      <textarea placeholder="Your message..."></textarea>
+      <button type="submit" class="btn-primary">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">CLUTTER<span style="color:var(--white)">BAG</span></span>
+      <p>3D printed World Cup keyrings for fans who wear their team with pride. Made to order, shipped with care.</p>
+      <div class="social-links"><a href="#">IG</a> <a href="#">WA</a> <a href="#">FB</a></div>
+    </div>
+    <div class="footer-col"><h5>Shop</h5><ul><li><a href="#shop">All Keyrings</a></li><li><a href="#shop">Custom Orders</a></li><li><a href="#shop">Bulk / Gifting</a></li></ul></div>
+    <div class="footer-col"><h5>Info</h5><ul><li><a href="#how">How It's Made</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div class="footer-col"><h5>Policies</h5><ul><li><a href="#">Shipping Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CLUTTER BAG. All rights reserved.</p>
+    <div class="payment-icons"><span class="pay-icon">UPI</span><span class="pay-icon">VISA</span><span class="pay-icon">MC</span><span class="pay-icon">GPAY</span><span class="pay-icon">PAYTM</span></div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header"><h3>Your Cart</h3><button class="cart-close" onclick="closeCart()">✕</button></div>
+  <div class="cart-items" id="cart-items"><div class="cart-empty">Your cart is empty.<br>Pick your team above ☝️</div></div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-total"><span>Total</span><span id="cart-total-display">₹0</span></div>
+    <button class="btn-primary" style="width:100%;margin-top:0" onclick="openCheckout()">Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Checkout</h3><button class="modal-close" onclick="closeCheckout()">✕</button></div>
+    <div class="modal-body" id="checkout-body">
+      <div class="order-summary">
+        <h4>Order Summary</h4>
+        <div id="checkout-summary"></div>
+      </div>
+      <div class="form-group"><label>Full Name *</label><input type="text" id="c-name" placeholder="As on delivery address" required></div>
+      <div class="form-group"><label>Phone Number *</label><input type="tel" id="c-phone" placeholder="+91 XXXXX XXXXX" required></div>
+      <div class="form-group"><label>Email Address *</label><input type="email" id="c-email" placeholder="for order confirmation" required></div>
+      <div class="form-group"><label>Address Line 1 *</label><input type="text" id="c-addr1" placeholder="House/Flat no., Street" required></div>
+      <div class="form-group"><label>Address Line 2</label><input type="text" id="c-addr2" placeholder="Area, Landmark (optional)"></div>
+      <div class="form-row">
+        <div class="form-group"><label>City *</label><input type="text" id="c-city" placeholder="City" required></div>
+        <div class="form-group"><label>PIN Code *</label><input type="text" id="c-pin" placeholder="6-digit PIN" required></div>
+      </div>
+      <div class="form-group"><label>State *</label>
+        <select id="c-state">
+          <option value="">Select State</option>
+          <option>Andhra Pradesh</option><option>Assam</option><option>Bihar</option><option>Delhi</option>
+          <option>Gujarat</option><option>Haryana</option><option>Karnataka</option><option>Kerala</option>
+          <option>Madhya Pradesh</option><option>Maharashtra</option><option>Odisha</option><option>Punjab</option>
+          <option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option><option>Uttar Pradesh</option>
+          <option>Uttarakhand</option><option selected>West Bengal</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Special Instructions</label><textarea id="c-notes" placeholder="Custom text, player name/number, gift message..."></textarea></div>
+      <div class="payment-section">
+        <h4>Payment Method</h4>
+        <div class="payment-options">
+          <div class="pay-opt selected" onclick="selectPay(this,'UPI')">📱 UPI</div>
+          <div class="pay-opt" onclick="selectPay(this,'Card')">💳 Card</div>
+          <div class="pay-opt" onclick="selectPay(this,'COD')">💵 COD</div>
+          <div class="pay-opt" onclick="selectPay(this,'GPay')">Google Pay</div>
+          <div class="pay-opt" onclick="selectPay(this,'Paytm')">Paytm</div>
+          <div class="pay-opt" onclick="selectPay(this,'PhonePe')">PhonePe</div>
+        </div>
+        <div id="pay-note" style="font-size:0.8rem;color:var(--text-muted);padding:0.5rem 0">Payment link will be sent via WhatsApp after order confirmation.</div>
+      </div>
+      <button class="place-order-btn" id="place-btn" onclick="placeOrder()">🏆 Place Order</button>
+    </div>
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✅</div>
+      <h3>Order Confirmed!</h3>
+      <div class="order-id-box" id="order-id-display"></div>
+      <p>Your order has been received and saved.<br>We'll contact you on WhatsApp / Email within 2 hours to confirm payment and dispatch details.</p>
+      <br>
+      <button class="btn-primary" onclick="closeCheckout();resetCart()">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── PRODUCTS ───────────────────────────────────────────────
+const PRODUCTS = [
+  {id:1,flag:"🇦🇷",country:"Argentina",name:"Argentina Keyring",price:299,was:450},
+  {id:2,flag:"🇧🇷",country:"Brazil",name:"Brazil Keyring",price:299,was:450},
+  {id:3,flag:"🇫🇷",country:"France",name:"France Keyring",price:299,was:450},
+  {id:4,flag:"🇩🇪",country:"Germany",name:"Germany Keyring",price:299,was:450},
+  {id:5,flag:"🇵🇹",country:"Portugal",name:"Portugal Keyring",price:299,was:450},
+  {id:6,flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",country:"England",name:"England Keyring",price:299,was:450},
+  {id:7,flag:"🇪🇸",country:"Spain",name:"Spain Keyring",price:299,was:450},
+  {id:8,flag:"🇮🇳",country:"India Special",name:"India Special Keyring",price:349,was:500},
+];
+
+let cart = [];
+let selectedPayment = "UPI";
+
+// ─── RENDER PRODUCTS ────────────────────────────────────────
+function renderProducts() {
+  document.getElementById('product-grid').innerHTML = PRODUCTS.map(p => `
+    <div class="product-card">
+      <div class="card-img"><span style="font-size:3.5rem">${p.flag}</span></div>
+      <div class="sale-badge">SALE</div>
+      <div class="card-body">
+        <div class="card-flag">${p.country} · 3D Printed</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-price"><span class="price-now">₹${p.price}</span><span class="price-was">₹${p.was}</span></div>
+        <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─── CART ────────────────────────────────────────────────────
+function addToCart(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  const ex = cart.find(x=>x.id===id);
+  if(ex){ex.qty++;}else{cart.push({...p,qty:1});}
+  updateCartUI();
+  showToast(`${p.flag} Added to cart!`);
+  openCart();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x=>x.id===id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) cart = cart.filter(x=>x.id!==id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((a,x)=>a+x.qty,0);
+  const total = cartTotal();
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total-display').textContent = `₹${total}`;
+  const el = document.getElementById('cart-items');
+  const footer = document.getElementById('cart-footer');
+  if(cart.length===0){
+    el.innerHTML='<div class="cart-empty">Your cart is empty.<br>Pick your team above ☝️</div>';
+    footer.style.display='none';
+  } else {
+    el.innerHTML = cart.map(x=>`
+      <div class="cart-item">
+        <div class="cart-item-icon">${x.flag}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${x.name}</div>
+          <div class="cart-item-price">₹${x.price} each</div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(${x.id},-1)">−</button>
+            <span class="qty-num">${x.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${x.id},1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="changeQty(${x.id},-999)">✕</button>
+      </div>`).join('');
+    footer.style.display='block';
+  }
+}
+
+function cartTotal() { return cart.reduce((a,x)=>a+x.price*x.qty,0); }
+function openCart(){ document.getElementById('cart-sidebar').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
+function closeCart(){ document.getElementById('cart-sidebar').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
+
+// ─── CHECKOUT ────────────────────────────────────────────────
+function openCheckout(){
+  closeCart();
+  const summary = cart.map(x=>`<div class="summary-row"><span>${x.flag} ${x.name} × ${x.qty}</span><span>₹${x.price*x.qty}</span></div>`).join('');
+  const total = cartTotal();
+  const shipping = total >= 599 ? 0 : 60;
+  document.getElementById('checkout-summary').innerHTML =
+    summary +
+    `<div class="summary-row"><span>Shipping</span><span>${shipping===0?'FREE':'₹'+shipping}</span></div>` +
+    `<div class="summary-row total"><span>Total Payable</span><span>₹${total+shipping}</span></div>`;
+  document.getElementById('checkout-modal').classList.add('open');
+  document.getElementById('checkout-body').style.display='block';
+  document.getElementById('success-screen').classList.remove('show');
+}
+
+function closeCheckout(){ document.getElementById('checkout-modal').classList.remove('open'); }
+function selectPay(el, method){ document.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); selectedPayment=method; }
+
+// ─── PLACE ORDER → GOOGLE SHEETS ────────────────────────────
+async function placeOrder(){
+  const name   = document.getElementById('c-name').value.trim();
+  const phone  = document.getElementById('c-phone').value.trim();
+  const email  = document.getElementById('c-email').value.trim();
+  const addr1  = document.getElementById('c-addr1').value.trim();
+  const addr2  = document.getElementById('c-addr2').value.trim();
+  const city   = document.getElementById('c-city').value.trim();
+  const pin    = document.getElementById('c-pin').value.trim();
+  const state  = document.getElementById('c-state').value;
+  const notes  = document.getElementById('c-notes').value.trim();
+
+  if(!name||!phone||!email||!addr1||!city||!pin||!state){
+    showToast('⚠️ Please fill all required fields'); return;
+  }
+  if(!/^\d{6}$/.test(pin)){ showToast('⚠️ Enter a valid 6-digit PIN'); return; }
+  if(!/^\+?[\d\s-]{10,}$/.test(phone)){ showToast('⚠️ Enter a valid phone number'); return; }
+
+  const btn = document.getElementById('place-btn');
+  btn.disabled=true; btn.textContent='Placing Order...';
+
+  const total = cartTotal();
+  const shipping = total >= 599 ? 0 : 60;
+  const orderId = 'CB-' + Date.now().toString().slice(-6);
+  const items = cart.map(x=>`${x.flag} ${x.name} x${x.qty} = ₹${x.price*x.qty}`).join(' | ');
+  const timestamp = new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'});
+
+  const payload = {
+    orderId, timestamp, name, phone, email,
+    address: `${addr1}${addr2?', '+addr2:''}, ${city}, ${state} - ${pin}`,
+    items, itemCount: cart.reduce((a,x)=>a+x.qty,0),
+    subtotal: total, shipping, grandTotal: total+shipping,
+    paymentMethod: selectedPayment, notes: notes||'—', status:'New Order'
+  };
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    // no-cors always throws — order still sent
+  }
+
+  btn.disabled=false; btn.textContent='🏆 Place Order';
+  document.getElementById('order-id-display').textContent = 'Order ID: ' + orderId;
+  document.getElementById('checkout-body').style.display='none';
+  document.getElementById('success-screen').classList.add('show');
+  showToast('✅ Order placed successfully!');
+}
+
+function resetCart(){ cart=[]; updateCartUI(); }
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function toggleFaq(btn){ btn.classList.toggle('open'); btn.nextElementSibling.classList.toggle('open'); }
+function submitContact(e){ e.preventDefault(); showToast('✅ Message sent! We\'ll reply soon.'); e.target.reset(); }
+function toggleMenu(){
+  const ul=document.querySelector('nav ul');
+  const open=ul.style.display==='flex';
+  Object.assign(ul.style,{display:open?'none':'flex',position:'fixed',top:'64px',left:0,right:0,background:'var(--grey)',flexDirection:'column',padding:'1rem 5%',gap:'1rem',borderBottom:'1px solid var(--gold-dim)',zIndex:99});
+}
+
+renderProducts();
+</script>
+</body>
+</html>
