@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All Keyrings — CLUTTER BAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#06090f; --navy:#0d1117; --navy2:#111827;
+  --gold:#c9a84c; --gold-bright:#f0c040; --gold-glow:rgba(201,168,76,0.35);
+  --gold-dim:#7a6020; --white:#f5f0e8; --grey:#1a1f2e;
+  --grey2:#252d3d; --muted:#6b7280; --green:#22c55e; --red:#ef4444;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── AMBIENT BG GLOW ─────────────────────────────── */
+body::before{
+  content:'';position:fixed;top:-20%;left:-10%;width:55%;height:70%;
+  background:radial-gradient(ellipse,rgba(201,168,76,0.07) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;bottom:-20%;right:-10%;width:55%;height:70%;
+  background:radial-gradient(ellipse,rgba(56,100,200,0.06) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── NAV ─────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;width:100%;z-index:100;
+  background:rgba(6,9,15,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:64px;
+}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.logo span{color:var(--white);}
+.logo-icon{width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+nav ul{list-style:none;display:flex;gap:2rem;}
+nav ul a{text-decoration:none;color:var(--white);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;transition:color 0.2s;opacity:0.8;}
+nav ul a:hover,nav ul a.active{color:var(--gold);opacity:1;}
+.nav-cart{
+  background:transparent;border:1px solid var(--gold);color:var(--gold);
+  padding:0.45rem 1.1rem;font-family:'Inter',sans-serif;font-weight:700;
+  font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:6px;
+}
+.nav-cart:hover{background:var(--gold);color:var(--black);}
+.cart-dot{
+  background:var(--gold);color:var(--black);border-radius:50%;
+  width:18px;height:18px;font-size:0.65rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── PAGE HEADER ─────────────────────────────────── */
+.page-header{
+  padding:120px 5% 50px;position:relative;z-index:1;
+  border-bottom:1px solid rgba(201,168,76,0.12);
+}
+.breadcrumb{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;opacity:0.8;}
+.page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,7vw,5.5rem);letter-spacing:4px;line-height:1;}
+.page-header h1 span{color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.5);}
+.product-count{font-size:0.8rem;color:var(--muted);margin-top:0.75rem;letter-spacing:1px;}
+.product-count strong{color:var(--gold);}
+
+/* ── GLOW LINE ───────────────────────────────────── */
+.glow-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 5%;opacity:0.4;}
+
+/* ── CONTROLS ────────────────────────────────────── */
+.controls{padding:2rem 5%;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;position:relative;z-index:1;}
+.search-wrap{flex:1;min-width:240px;position:relative;}
+.search-wrap input{
+  width:100%;background:var(--grey);border:1px solid rgba(201,168,76,0.2);
+  color:var(--white);padding:0.85rem 1rem 0.85rem 2.8rem;
+  font-family:'Inter',sans-serif;font-size:0.9rem;
+  transition:border-color 0.2s;
+}
+.search-wrap input::placeholder{color:var(--muted);}
+.search-wrap input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.1);}
+.search-icon{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1rem;pointer-events:none;}
+.sort-select{
+  background:var(--grey);border:1px solid rgba(201,168,76,0.2);color:var(--white);
+  padding:0.85rem 2.5rem 0.85rem 1rem;font-family:'Inter',sans-serif;
+  font-size:0.85rem;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0.9rem center;
+  min-width:180px;transition:border-color 0.2s;
+}
+.sort-select:focus{outline:none;border-color:var(--gold);}
+.sort-select option{background:var(--navy2);}
+
+/* ── FILTER PILLS ────────────────────────────────── */
+.filter-bar{padding:0 5% 2rem;display:flex;flex-wrap:wrap;gap:0.5rem;position:relative;z-index:1;}
+.pill{
+  padding:0.4rem 1rem;border:1px solid rgba(201,168,76,0.2);
+  background:transparent;color:var(--muted);font-size:0.72rem;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.2s;
+}
+.pill:hover{border-color:var(--gold);color:var(--gold);}
+.pill.active{background:var(--gold);border-color:var(--gold);color:var(--black);}
+
+/* ── PRODUCT GRID ────────────────────────────────── */
+.shop-grid{
+  padding:0 5% 6rem;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.5rem;position:relative;z-index:1;
+}
+.product-card{
+  background:var(--grey);border:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:all 0.35s;
+}
+.product-card:hover{
+  border-color:rgba(201,168,76,0.5);
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(201,168,76,0.12),0 8px 24px rgba(0,0,0,0.4);
+}
+.card-img{
+  width:100%;aspect-ratio:4/3;
+  background:var(--grey2);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.card-img .flag-emoji{font-size:5rem;transition:transform 0.4s;}
+.product-card:hover .flag-emoji{transform:scale(1.12);}
+/* Glow behind flag on hover */
+.card-img::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(201,168,76,0.12) 0%,transparent 70%);
+  opacity:0;transition:opacity 0.35s;pointer-events:none;
+}
+.product-card:hover .card-img::after{opacity:1;}
+
+/* Badges */
+.badges{position:absolute;top:0.75rem;left:0.75rem;display:flex;gap:0.4rem;flex-wrap:wrap;}
+.badge{font-size:0.6rem;font-weight:800;padding:0.25rem 0.5rem;letter-spacing:1px;text-transform:uppercase;}
+.badge-sale{background:var(--red);color:#fff;}
+.badge-best{background:var(--gold);color:var(--black);}
+.badge-hot{background:#ff6b35;color:#fff;}
+.badge-new{background:#8b5cf6;color:#fff;}
+
+/* Country code chip */
+.country-chip{
+  position:absolute;bottom:0.75rem;left:0.75rem;
+  background:rgba(6,9,15,0.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(201,168,76,0.3);
+  padding:0.2rem 0.5rem;font-size:0.65rem;font-weight:700;
+  letter-spacing:2px;color:var(--gold);display:flex;gap:5px;align-items:center;
+}
+.country-chip span{color:var(--muted);}
+
+.card-body{padding:1.25rem;}
+.card-name{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;margin-bottom:0.6rem;transition:color 0.2s;}
+.product-card:hover .card-name{color:var(--gold);}
+.card-price-row{display:flex;align-items:baseline;gap:0.6rem;margin-bottom:0.75rem;}
+.price-now{font-size:1.2rem;font-weight:800;color:var(--white);}
+.price-now span{font-size:0.75rem;font-weight:600;color:var(--muted);margin-right:1px;}
+.price-was{font-size:0.85rem;color:var(--muted);text-decoration:line-through;}
+.price-save{font-size:0.7rem;font-weight:700;color:var(--green);background:rgba(34,197,94,0.1);padding:0.15rem 0.4rem;}
+.stock-row{display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;}
+.stock-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+.stock-label{font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green);}
+.btn-add{
+  width:100%;padding:0.8rem;background:transparent;
+  border:1px solid rgba(201,168,76,0.4);color:var(--gold);
+  font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:0.78rem;
+  cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;
+  position:relative;overflow:hidden;
+}
+.btn-add::before{
+  content:'';position:absolute;inset:0;background:var(--gold);
+  transform:translateX(-100%);transition:transform 0.25s;z-index:0;
+}
+.btn-add:hover::before{transform:translateX(0);}
+.btn-add:hover{color:var(--black);}
+.btn-add span{position:relative;z-index:1;}
+
+/* ── NO RESULTS ──────────────────────────────────── */
+.no-results{
+  grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted);
+}
+.no-results .nr-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
+.no-results h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--white);margin-bottom:0.5rem;}
+
+/* ── CART SIDEBAR ────────────────────────────────── */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;}
+.cart-overlay.open{display:block;}
+.cart-sidebar{
+  position:fixed;top:0;right:-440px;width:100%;max-width:420px;height:100%;
+  background:var(--navy);z-index:201;transition:right 0.3s;
+  display:flex;flex-direction:column;border-left:1px solid rgba(201,168,76,0.2);
+}
+.cart-sidebar.open{right:0;}
+.cart-header{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;}
+.cart-header h3{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--gold);}
+.cart-close{background:none;border:none;color:var(--white);font-size:1.5rem;cursor:pointer;opacity:0.7;transition:opacity 0.2s;}
+.cart-close:hover{opacity:1;}
+.cart-items{flex:1;overflow-y:auto;padding:1.5rem;}
+.cart-empty{text-align:center;padding:3rem 0;color:var(--muted);}
+.cart-empty .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.3;}
+.cart-item{display:flex;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center;}
+.cart-item-flag{font-size:2rem;width:50px;text-align:center;}
+.cart-item-info{flex:1;}
+.cart-item-name{font-size:0.9rem;font-weight:600;margin-bottom:0.3rem;}
+.cart-item-price{color:var(--gold);font-size:0.85rem;font-weight:700;}
+.qty-row{display:flex;align-items:center;gap:0.5rem;margin-top:0.4rem;}
+.qty-btn{background:var(--grey2);border:1px solid rgba(255,255,255,0.1);color:var(--white);width:26px;height:26px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold);}
+.qty-num{font-size:0.85rem;min-width:22px;text-align:center;font-weight:600;}
+.cart-rm{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;transition:color 0.2s;}
+.cart-rm:hover{color:var(--red);}
+.cart-footer{padding:1.5rem;border-top:1px solid rgba(255,255,255,0.06);}
+.cart-subtotal{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;}
+.cart-total-row{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;margin-bottom:1.2rem;}
+.cart-total-row span:last-child{color:var(--gold);}
+.btn-checkout{
+  width:100%;padding:1rem;background:var(--gold);color:var(--black);
+  border:none;font-family:'Inter',sans-serif;font-weight:800;
+  font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:background 0.2s;
+}
+.btn-checkout:hover{background:var(--gold-bright);}
+
+/* ── TOAST ───────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);
+  background:var(--gold);color:var(--black);padding:0.75rem 1.5rem;
+  font-weight:700;font-size:0.82rem;letter-spacing:1px;z-index:500;
+  transition:transform 0.3s;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(201,168,76,0.35);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media(max-width:768px){
+  nav ul{display:none;}
+  .controls{flex-direction:column;}
+  .sort-select{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><div class="logo-icon">⚡</div>CLUTTER<span>BAG</span></a>
+  <ul>
+    <li><a href="shop.html" class="active">Shop</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cart" onclick="openCart()">
+    🛒 Cart <div class="cart-dot" id="cart-count">0</div>
+  </button>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="breadcrumb">🏆 Trophy Room</div>
+  <h1>SHOP ALL <span>KEYRINGS</span></h1>
+  <p class="product-count"><strong id="visible-count">16</strong> Products</p>
+</div>
+<div class="glow-line"></div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search keyrings..." oninput="filterProducts()">
+  </div>
+  <select class="sort-select" id="sort-select" onchange="filterProducts()">
+    <option value="default">Sort: Default</option>
+    <option value="price-asc">Price: Low to High</option>
+    <option value="price-desc">Price: High to Low</option>
+    <option value="discount">Biggest Discount</option>
+    <option value="name-asc">Name: A–Z</option>
+  </select>
+</div>
+
+<!-- FILTER PILLS -->
+<div class="filter-bar" id="filter-bar"></div>
+
+<!-- PRODUCT GRID -->
+<div class="shop-grid" id="shop-grid"></div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty"><div class="empty-icon">🛒</div><p>Your cart is empty.<br>Pick your team above!</p></div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cart-sub">₹0</span></div>
+    <div class="cart-total-row"><span>Total</span><span id="cart-total">₹0</span></div>
+    <button class="btn-checkout" onclick="goCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PRODUCTS ──────────────────────────────────────────────────
+const PRODUCTS = [
+  {id:1, code:"AR", flag:"🇦🇷", country:"Argentina", name:"Argentina Keyring", price:299, was:499, tags:["bestseller"], desc:"Sky blue & white stripes with AFA crest."},
+  {id:2, code:"BR", flag:"🇧🇷", country:"Brazil",    name:"Brazil Keyring",    price:299, was:499, tags:["hot"],        desc:"Iconic Canarinho yellow & green design."},
+  {id:3, code:"FR", flag:"🇫🇷", country:"France",    name:"France Keyring",    price:299, was:449, tags:[],             desc:"Les Bleus tricolour with FFF crest."},
+  {id:4, code:"PT", flag:"🇵🇹", country:"Portugal",  name:"Portugal Keyring",  price:299, was:449, tags:[],             desc:"Seleção das Quinas in red & green."},
+  {id:5, code:"DE", flag:"🇩🇪", country:"Germany",   name:"Germany Keyring",   price:299, was:449, tags:[],             desc:"Die Mannschaft classic black & white."},
+  {id:6, code:"ES", flag:"🇪🇸", country:"Spain",     name:"Spain Keyring",     price:299, was:449, tags:["hot"],        desc:"La Roja in deep red & gold."},
+  {id:7, code:"EN", flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", country:"England",  name:"England Keyring",   price:299, was:449, tags:[],             desc:"Three Lions in white & navy."},
+  {id:8, code:"IT", flag:"🇮🇹", country:"Italy",     name:"Italy Keyring",     price:299, was:449, tags:["new"],        desc:"Gli Azzurri in classic blue."},
+  {id:9, code:"NL", flag:"🇳🇱", country:"Netherlands",name:"Netherlands Keyring",price:299,was:449, tags:[],            desc:"Oranje in vibrant Dutch orange."},
+  {id:10,code:"BE", flag:"🇧🇪", country:"Belgium",   name:"Belgium Keyring",   price:299, was:449, tags:[],             desc:"Red Devils in black, gold & red."},
+  {id:11,code:"HR", flag:"🇭🇷", country:"Croatia",   name:"Croatia Keyring",   price:299, was:449, tags:["new"],        desc:"Vatreni in iconic red & white checks."},
+  {id:12,code:"MA", flag:"🇲🇦", country:"Morocco",   name:"Morocco Keyring",   price:299, was:449, tags:[],             desc:"Atlas Lions in green & red."},
+  {id:13,code:"JP", flag:"🇯🇵", country:"Japan",     name:"Japan Keyring",     price:299, was:449, tags:[],             desc:"Samurai Blue in navy & white."},
+  {id:14,code:"US", flag:"🇺🇸", country:"USA",       name:"USA Keyring",       price:299, was:449, tags:[],             desc:"Stars & Stripes in red, white & blue."},
+  {id:15,code:"MX", flag:"🇲🇽", country:"Mexico",    name:"Mexico Keyring",    price:299, was:449, tags:[],             desc:"El Tri in green, white & red."},
+  {id:16,code:"IN", flag:"🇮🇳", country:"India",     name:"India Special Keyring",price:349,was:500,tags:["bestseller","hot"],desc:"Special edition India design."},
+];
+
+let cart = JSON.parse(sessionStorage.getItem('cb_cart')||'[]');
+let activeFilter = "ALL";
+
+// ── FILTERS ───────────────────────────────────────────────────
+function buildFilters(){
+  const bar = document.getElementById('filter-bar');
+  const countries = ["ALL",...PRODUCTS.map(p=>p.country)];
+  bar.innerHTML = countries.map(c=>`
+    <button class="pill${c==='ALL'?' active':''}" onclick="setFilter('${c}',this)">${c}</button>
+  `).join('');
+}
+
+function setFilter(c, el){
+  activeFilter = c;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  filterProducts();
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function filterProducts(){
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const sort = document.getElementById('sort-select').value;
+  let list = PRODUCTS.filter(p=>{
+    const matchFilter = activeFilter==='ALL' || p.country===activeFilter;
+    const matchSearch = p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  if(sort==='price-asc')   list.sort((a,b)=>a.price-b.price);
+  if(sort==='price-desc')  list.sort((a,b)=>b.price-a.price);
+  if(sort==='discount')    list.sort((a,b)=>(b.was-b.price)-(a.was-a.price));
+  if(sort==='name-asc')    list.sort((a,b)=>a.name.localeCompare(b.name));
+
+  document.getElementById('visible-count').textContent = list.length;
+  const grid = document.getElementById('shop-grid');
+
+  if(list.length===0){
+    grid.innerHTML=`<div class="no-results"><div class="nr-icon">🔍</div><h3>No keyrings found</h3><p style="color:var(--muted);font-size:0.9rem">Try a different search or clear the filter</p></div>`;
+    return;
+  }
+
+  const discPct = p => Math.round((p.was-p.price)/p.was*100);
+
+  grid.innerHTML = list.map(p=>{
+    const disc = discPct(p);
+    const badgesHTML = [
+      disc>0 ? `<span class="badge badge-sale">-${disc}%</span>` : '',
+      p.tags.includes('bestseller') ? `<span class="badge badge-best">Bestseller</span>` : '',
+      p.tags.includes('hot')        ? `<span class="badge badge-hot">🔥 Hot</span>` : '',
+      p.tags.includes('new')        ? `<span class="badge badge-new">New</span>` : '',
+    ].join('');
+
+    return `
+    <div class="product-card" onclick="cardClick(event,${p.id})">
+      <div class="card-img">
+        <span class="flag-emoji">${p.flag}</span>
+        <div class="badges">${badgesHTML}</div>
+        <div class="country-chip">${p.code} <span>${p.country.toUpperCase()}</span></div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-price-row">
+          <span class="price-now"><span>₹</span>${p.price}</span>
+          ${p.was>p.price?`<span class="price-was">₹${p.was}</span><span class="price-save">Save ₹${p.was-p.price}</span>`:''}
+        </div>
+        <div class="stock-row">
+          <div class="stock-dot"></div>
+          <span class="stock-label">In Stock</span>
+        </div>
+        <button class="btn-add" onclick="addToCart(${p.id})"><span>Add to Cart</span></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function cardClick(e, id){
+  if(e.target.closest('.btn-add')) return;
+  // Future: open product detail page
+}
+
+// ── CART ──────────────────────────────────────────────────────
+function addToCart(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const ex = cart.find(x=>x.id===id);
+  if(ex){ex.qty++;}else{cart.push({...p,qty:1});}
+  saveCart(); updateCartUI();
+  showToast(`${p.flag} ${p.name} added!`);
+  openCart();
+}
+
+function changeQty(id,d){
+  const item=cart.find(x=>x.id===id);
+  if(!item)return;
+  item.qty+=d;
+  if(item.qty<=0)cart=cart.filter(x=>x.id!==id);
+  saveCart();updateCartUI();
+}
+
+function saveCart(){sessionStorage.setItem('cb_cart',JSON.stringify(cart));}
+
+function updateCartUI(){
+  const count=cart.reduce((a,x)=>a+x.qty,0);
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const shipping=total>=599?0:60;
+  document.getElementById('cart-count').textContent=count;
+  document.getElementById('cart-sub') && (document.getElementById('cart-sub').textContent='₹'+total);
+  document.getElementById('cart-total') && (document.getElementById('cart-total').textContent='₹'+(total+shipping));
+
+  const el=document.getElementById('cart-items');
+  const footer=document.getElementById('cart-footer');
+  if(cart.length===0){
+    el.innerHTML='<div class="cart-empty"><div class="empty-icon">🛒</div><p>Your cart is empty.<br>Pick your team!</p></div>';
+    footer.style.display='none';
+  } else {
+    el.innerHTML=cart.map(x=>`
+      <div class="cart-item">
+        <div class="cart-item-flag">${x.flag}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${x.name}</div>
+          <div class="cart-item-price">₹${x.price} × ${x.qty}</div>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changeQty(${x.id},-1)">−</button>
+            <span class="qty-num">${x.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${x.id},1)">+</button>
+          </div>
+        </div>
+        <button class="cart-rm" onclick="changeQty(${x.id},-999)">✕</button>
+      </div>`).join('');
+    footer.style.display='block';
+  }
+}
+
+function openCart(){document.getElementById('cart-sidebar').classList.add('open');document.getElementById('cart-overlay').classList.add('open');}
+function closeCart(){document.getElementById('cart-sidebar').classList.remove('open');document.getElementById('cart-overlay').classList.remove('open');}
+function goCheckout(){closeCart();window.location.href='index.html';}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+buildFilters();
+filterProducts();
+updateCartUI();
+</script>
+</body>
+</html>
