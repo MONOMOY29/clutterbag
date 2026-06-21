@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -33,7 +33,8 @@
 
   /* HERO */
   .hero { min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:80px 5% 0; background:radial-gradient(ellipse at 50% 60%, #1a1200 0%, var(--black) 70%); position:relative; overflow:hidden; }
-  .hero::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px); }
+  .hero::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(201,168,76,0.03) 60px,rgba(201,168,76,0.03) 61px); pointer-events:none; z-index:0; }
+  .hero > div { position:relative; z-index:1; }
   .hero-eyebrow { font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; font-weight:600; }
   .hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,12vw,9rem); line-height:0.9; letter-spacing:4px; color:var(--white); text-shadow:0 0 80px rgba(201,168,76,0.25); margin-bottom:0.5rem; }
   .hero h1 .gold { color:var(--gold); }
@@ -215,7 +216,7 @@
 
 <!-- ⚠️  SELLER: Replace this URL with your Google Apps Script Web App URL -->
 <script>
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw55b4LGyHkydWc1NiDUi9Pq1eKR5xYGMUvmvvHm3AI-ubtiIYohKi-_Jo7Uo0Dsrq_/exec";
+  const APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 </script>
 
 <div class="promo-bar">🏆 FREE SHIPPING ABOVE ₹599 &nbsp;|&nbsp; CODE: <strong>GOAL10</strong> FOR 10% OFF</div>
