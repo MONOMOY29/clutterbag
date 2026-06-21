@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order — CLUTTER BAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--black:#061208;--navy:#091a0f;--gold:#f0c040;--gold-bright:#ffe066;--gold-dim:#8a7030;--white:#f0ffe8;--grey:#0c2414;--grey2:#163820;--muted:#5a9468;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;top:-20%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(240,192,64,0.09) 0%,transparent 65%);pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,18,8,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(240,192,64,0.2);display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:64px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);text-decoration:none;}
+.logo span{color:var(--white);}
+nav ul{list-style:none;display:flex;gap:2rem;}
+nav ul a{text-decoration:none;color:var(--white);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;opacity:0.8;transition:color 0.2s;}
+nav ul a:hover,nav ul a.active{color:var(--gold);opacity:1;}
+
+.page-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 5% 4rem;position:relative;z-index:1;}
+
+/* SEARCH BOX */
+.track-box{width:100%;max-width:560px;text-align:center;}
+.track-eyebrow{font-size:0.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.track-box h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4rem);letter-spacing:3px;margin-bottom:0.5rem;}
+.track-box h1 span{color:var(--gold);text-shadow:0 0 20px rgba(240,192,64,1), 0 0 50px rgba(240,192,64,0.5);}
+.track-box p{color:var(--muted);font-size:0.9rem;margin-bottom:2.5rem;line-height:1.6;}
+.input-row{display:flex;gap:0;margin-bottom:1rem;}
+.input-row input{flex:1;background:var(--grey);border:1px solid rgba(240,192,64,0.25);border-right:none;color:var(--white);padding:1rem 1.2rem;font-family:'Inter',sans-serif;font-size:0.95rem;letter-spacing:1px;}
+.input-row input::placeholder{color:var(--muted);}
+.input-row input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,192,64,0.1);}
+.btn-track{background:var(--gold);color:var(--black);border:none;padding:1rem 1.8rem;font-family:'Inter',sans-serif;font-weight:800;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+.btn-track:hover{background:var(--gold-bright);}
+.btn-track:disabled{background:var(--gold-dim);cursor:not-allowed;}
+.hint{font-size:0.75rem;color:var(--muted);text-align:center;}
+.hint strong{color:var(--gold);}
+
+/* ERROR */
+.error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:1rem;font-size:0.85rem;margin-bottom:1rem;display:none;text-align:left;}
+.error-msg.show{display:block;}
+
+/* RESULT CARD */
+.result-card{width:100%;max-width:640px;margin-top:2rem;background:var(--grey);border:1px solid rgba(240,192,64,0.2);display:none;}
+.result-card.show{display:block;}
+.result-header{background:var(--black);padding:1.25rem 1.5rem;border-bottom:1px solid rgba(240,192,64,0.15);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;}
+.order-id-label{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.25rem;}
+.order-id-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--gold);text-shadow:0 0 10px rgba(240,192,64,0.8);}
+.status-pill{padding:0.35rem 1rem;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;}
+.status-new{background:rgba(240,192,64,0.15);color:var(--gold);border:1px solid rgba(240,192,64,0.3);}
+.status-confirmed{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);}
+.status-printing{background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3);}
+.status-shipped{background:rgba(34,197,94,0.15);color:#86efac;border:1px solid rgba(34,197,94,0.3);}
+.status-delivered{background:rgba(34,197,94,0.25);color:#4ade80;border:1px solid rgba(34,197,94,0.4);}
+
+.result-body{padding:1.5rem;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.info-item label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.3rem;}
+.info-item p{font-size:0.9rem;font-weight:600;color:var(--white);}
+
+.items-section{margin-bottom:1.5rem;}
+.items-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;}
+.items-val{font-size:0.88rem;color:var(--white);line-height:1.7;background:var(--grey2);padding:0.75rem 1rem;}
+
+/* PROGRESS TRACKER */
+.progress-section{margin-bottom:1rem;}
+.progress-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+.steps-row{display:flex;align-items:center;gap:0;}
+.step-node{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;border:2px solid;transition:all 0.3s;z-index:1;background:var(--black);}
+.step-circle.done{background:var(--gold);border-color:var(--gold);color:var(--black);}
+.step-circle.active{background:var(--grey);border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px rgba(240,192,64,0.4);}
+.step-circle.pending{border-color:var(--grey2);color:var(--muted);}
+.step-name{font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-top:0.5rem;text-align:center;color:var(--muted);}
+.step-name.done,.step-name.active{color:var(--white);}
+.step-line{flex:1;height:2px;background:var(--grey2);margin-top:-16px;position:relative;z-index:0;}
+.step-line.done{background:var(--gold);}
+
+@media(max-width:520px){.info-grid{grid-template-columns:1fr;}.input-row{flex-direction:column;}.input-row input{border-right:1px solid rgba(240,192,64,0.25);border-bottom:none;}.btn-track{width:100%;}.steps-row{gap:0;}.step-name{font-size:0.55rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">CLUTTER<span>BAG</span></a>
+  <ul>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="track.html" class="active">Track Order</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+  <div class="track-box">
+    <p class="track-eyebrow">📦 Order Status</p>
+    <h1>TRACK YOUR <span>ORDER</span></h1>
+    <p>Enter your Order ID to see live status, items ordered, and delivery details.</p>
+    <div class="input-row">
+      <input type="text" id="order-input" placeholder="e.g. CB-100001" maxlength="20" onkeydown="if(event.key==='Enter')trackOrder()">
+      <button class="btn-track" id="track-btn" onclick="trackOrder()">Track →</button>
+    </div>
+    <p class="hint">Your Order ID was shown on the confirmation screen and sent via WhatsApp. It starts with <strong>CB-</strong></p>
+  </div>
+
+  <div class="error-msg" id="error-msg">❌ <span id="error-text"></span></div>
+
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <div>
+        <div class="order-id-label">Order ID</div>
+        <div class="order-id-val" id="res-orderid"></div>
+      </div>
+      <div class="status-pill" id="res-status-pill"></div>
+    </div>
+    <div class="result-body">
+      <!-- Progress -->
+      <div class="progress-section">
+        <div class="progress-label">Order Progress</div>
+        <div class="steps-row" id="steps-row"></div>
+      </div>
+      <!-- Info grid -->
+      <div class="info-grid">
+        <div class="info-item"><label>Customer</label><p id="res-name">—</p></div>
+        <div class="info-item"><label>Order Date</label><p id="res-date">—</p></div>
+        <div class="info-item"><label>Total Paid</label><p id="res-total">—</p></div>
+        <div class="info-item"><label>Payment</label><p id="res-payment">—</p></div>
+      </div>
+      <div class="items-section">
+        <div class="items-label">Items Ordered</div>
+        <div class="items-val" id="res-items">—</div>
+      </div>
+      <div class="info-item"><label>Delivery Address</label><p id="res-address" style="font-size:0.85rem;font-weight:400;color:var(--muted);margin-top:0.3rem;">—</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── REPLACE THIS with your Google Apps Script URL ──────────────────
+const APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+const STATUSES = ["New Order","Confirmed","Printing","Shipped","Delivered"];
+const STATUS_CLASSES = {
+  "New Order":"status-new","Confirmed":"status-confirmed",
+  "Printing":"status-printing","Shipped":"status-shipped","Delivered":"status-delivered"
+};
+
+async function trackOrder(){
+  const id = document.getElementById('order-input').value.trim().toUpperCase();
+  const btn = document.getElementById('track-btn');
+  const errEl = document.getElementById('error-msg');
+  const errText = document.getElementById('error-text');
+  const card = document.getElementById('result-card');
+
+  errEl.classList.remove('show'); card.classList.remove('show');
+
+  if(!id){ showError("Please enter an Order ID."); return; }
+  if(!id.startsWith('CB-')){ showError("Order ID must start with CB- (e.g. CB-100001)"); return; }
+
+  btn.disabled=true; btn.textContent='Searching...';
+
+  try {
+    const url = APPS_SCRIPT_URL + '?action=track&orderId=' + encodeURIComponent(id);
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(!data || data.error || !data.orderId){
+      showError("Order not found. Please check your Order ID and try again.");
+    } else {
+      populateResult(data);
+    }
+  } catch(e){
+    showError("Could not connect. Please check your internet and try again.");
+  }
+
+  btn.disabled=false; btn.textContent='Track →';
+}
+
+function showError(msg){
+  document.getElementById('error-text').textContent = msg;
+  document.getElementById('error-msg').classList.add('show');
+}
+
+function populateResult(d){
+  document.getElementById('res-orderid').textContent = d.orderId || '—';
+  document.getElementById('res-name').textContent    = d.name    || '—';
+  document.getElementById('res-date').textContent    = d.timestamp ? d.timestamp.split(' ')[0] : '—';
+  document.getElementById('res-total').textContent   = d.grandTotal ? '₹'+d.grandTotal : '—';
+  document.getElementById('res-payment').textContent = d.paymentMethod || '—';
+  document.getElementById('res-items').textContent   = d.items || '—';
+  document.getElementById('res-address').textContent = d.address || '—';
+
+  const status = d.status || 'New Order';
+  const pill = document.getElementById('res-status-pill');
+  pill.textContent = status;
+  pill.className = 'status-pill ' + (STATUS_CLASSES[status]||'status-new');
+
+  // Progress bar
+  const si = STATUSES.indexOf(status);
+  const row = document.getElementById('steps-row');
+  row.innerHTML = STATUSES.map((s,i)=>{
+    const cls = i<si?'done':i===si?'active':'pending';
+    const icon = i<si?'✓':i===si?'●':'○';
+    const line = i<STATUSES.length-1 ? `<div class="step-line ${i<si?'done':''}"></div>` : '';
+    return `<div class="step-node"><div class="step-circle ${cls}">${icon}</div><div class="step-name ${cls}">${s}</div></div>${line}`;
+  }).join('');
+
+  document.getElementById('result-card').classList.add('show');
+}
+</script>
+</body>
+</html>

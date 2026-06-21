@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — CLUTTER BAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--black:#061208;--navy:#091a0f;--gold:#f0c040;--gold-bright:#ffe066;--gold-dim:#8a7030;--white:#f0ffe8;--grey:#0c2414;--grey2:#163820;--muted:#5a9468;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;--orange:#f97316;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;}
+
+/* LOGIN SCREEN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.login-box{width:100%;max-width:400px;background:var(--grey);border:1px solid rgba(240,192,64,0.2);padding:2.5rem;}
+.login-box .logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--gold);display:block;margin-bottom:0.25rem;}
+.login-box .logo span{color:var(--white);}
+.login-box h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--muted);margin-bottom:2rem;}
+.form-field{margin-bottom:1rem;}
+.form-field label{display:block;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;}
+.form-field input{width:100%;background:var(--black);border:1px solid rgba(240,192,64,0.2);color:var(--white);padding:0.85rem 1rem;font-family:'Inter',sans-serif;font-size:0.9rem;}
+.form-field input:focus{outline:none;border-color:var(--gold);}
+.btn-login{width:100%;padding:1rem;background:var(--gold);color:var(--black);border:none;font-family:'Inter',sans-serif;font-weight:800;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;transition:background 0.2s;}
+.btn-login:hover{background:var(--gold-bright);}
+.login-err{color:#fca5a5;font-size:0.82rem;margin-top:0.75rem;display:none;}
+.login-err.show{display:block;}
+
+/* ADMIN SHELL */
+#admin-shell{display:none;}
+#admin-shell.show{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--navy);border-right:1px solid rgba(240,192,64,0.1);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+.sidebar-logo{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(240,192,64,0.1);}
+.sidebar-logo .logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--gold);}
+.sidebar-logo .logo span{color:var(--white);}
+.sidebar-logo p{font-size:0.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.sidebar nav{flex:1;padding:1rem 0;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;cursor:pointer;font-size:0.82rem;color:var(--muted);letter-spacing:0.5px;transition:all 0.2s;border-left:3px solid transparent;}
+.nav-item:hover{color:var(--white);background:rgba(255,255,255,0.04);}
+.nav-item.active{color:var(--gold);background:rgba(240,192,64,0.06);border-left-color:var(--gold);}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:1rem 1.5rem;border-top:1px solid rgba(240,192,64,0.1);}
+.btn-logout{width:100%;padding:0.6rem;background:transparent;border:1px solid rgba(239,68,68,0.3);color:#fca5a5;font-family:'Inter',sans-serif;font-size:0.75rem;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.btn-logout:hover{background:rgba(239,68,68,0.1);}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:2rem;min-height:100vh;}
+.page-section{display:none;}
+.page-section.active{display:block;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--white);margin-bottom:0.25rem;text-shadow:0 0 15px rgba(240,192,64,0.5);}
+.page-sub{font-size:0.82rem;color:var(--muted);margin-bottom:2rem;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
+.kpi{background:var(--grey);border:1px solid rgba(255,255,255,0.06);padding:1.25rem;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.kpi.gold::before{background:var(--gold);}
+.kpi.green::before{background:var(--green);}
+.kpi.blue::before{background:var(--blue);}
+.kpi.orange::before{background:var(--orange);}
+.kpi.purple::before{background:var(--purple);}
+.kpi label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.5rem;}
+.kpi .val{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;}
+.kpi.gold .val{color:var(--gold);}
+.kpi.green .val{color:var(--green);}
+.kpi.blue .val{color:var(--blue);}
+.kpi.orange .val{color:var(--orange);}
+.kpi.purple .val{color:var(--purple);}
+
+/* ORDERS TABLE */
+.table-controls{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+.table-search{flex:1;min-width:200px;background:var(--grey);border:1px solid rgba(255,255,255,0.08);color:var(--white);padding:0.65rem 1rem;font-family:'Inter',sans-serif;font-size:0.85rem;}
+.table-search:focus{outline:none;border-color:var(--gold);}
+.filter-select{background:var(--grey);border:1px solid rgba(255,255,255,0.08);color:var(--white);padding:0.65rem 1rem;font-family:'Inter',sans-serif;font-size:0.82rem;cursor:pointer;}
+.filter-select option{background:var(--navy);}
+.btn-refresh{background:transparent;border:1px solid rgba(240,192,64,0.3);color:var(--gold);padding:0.65rem 1.2rem;font-family:'Inter',sans-serif;font-size:0.78rem;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.btn-refresh:hover{background:rgba(240,192,64,0.08);}
+.btn-export{background:var(--gold);color:var(--black);border:none;padding:0.65rem 1.2rem;font-family:'Inter',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:1px;cursor:pointer;transition:background 0.2s;}
+.btn-export:hover{background:var(--gold-bright);}
+
+.table-wrap{overflow-x:auto;background:var(--grey);border:1px solid rgba(255,255,255,0.06);}
+table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+thead tr{background:var(--black);border-bottom:1px solid rgba(240,192,64,0.2);}
+thead th{padding:0.9rem 1rem;text-align:left;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--gold);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;}
+tbody tr:hover{background:rgba(255,255,255,0.03);}
+td{padding:0.85rem 1rem;vertical-align:middle;white-space:nowrap;}
+td.wrap{white-space:normal;max-width:200px;font-size:0.78rem;}
+.status-badge{padding:0.2rem 0.6rem;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.s-new{background:rgba(240,192,64,0.15);color:var(--gold);}
+.s-confirmed{background:rgba(59,130,246,0.15);color:#93c5fd;}
+.s-printing{background:rgba(139,92,246,0.15);color:#c4b5fd;}
+.s-shipped{background:rgba(34,197,94,0.15);color:#86efac;}
+.s-delivered{background:rgba(34,197,94,0.25);color:#4ade80;}
+.status-select{background:var(--grey2);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.3rem 0.5rem;font-family:'Inter',sans-serif;font-size:0.75rem;cursor:pointer;}
+.status-select:focus{outline:none;border-color:var(--gold);}
+.no-orders{text-align:center;padding:3rem;color:var(--muted);}
+.loading{text-align:center;padding:3rem;color:var(--muted);}
+
+/* PRODUCTS PAGE */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.prod-card{background:var(--grey);border:1px solid rgba(255,255,255,0.06);padding:1.25rem;}
+.prod-card .pflag{font-size:2.5rem;margin-bottom:0.75rem;}
+.prod-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;margin-bottom:0.5rem;}
+.prod-price-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}
+.prod-price{font-size:1rem;font-weight:700;color:var(--gold);}
+.prod-was{font-size:0.8rem;color:var(--muted);text-decoration:line-through;}
+.prod-edit-row{display:flex;gap:0.5rem;}
+.prod-input{flex:1;background:var(--black);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.4rem 0.6rem;font-family:'Inter',sans-serif;font-size:0.82rem;width:80px;}
+.prod-input:focus{outline:none;border-color:var(--gold);}
+.btn-save-price{background:var(--gold);color:var(--black);border:none;padding:0.4rem 0.75rem;font-family:'Inter',sans-serif;font-weight:700;font-size:0.72rem;cursor:pointer;letter-spacing:1px;}
+.btn-save-price:hover{background:var(--gold-bright);}
+.stock-toggle{display:flex;align-items:center;gap:0.5rem;margin-top:0.75rem;font-size:0.78rem;color:var(--muted);}
+.toggle{width:36px;height:20px;background:var(--grey2);border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;border:1px solid rgba(255,255,255,0.1);}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform 0.2s;}
+.toggle.on::after{transform:translateX(16px);}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--gold);color:var(--black);padding:0.75rem 1.5rem;font-weight:700;font-size:0.82rem;letter-spacing:1px;z-index:500;transform:translateY(80px);transition:transform 0.3s;opacity:0;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:768px){.sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;}.main{margin-left:0;}.sidebar nav{display:flex;flex-direction:row;flex-wrap:wrap;padding:0.5rem;}.nav-item{padding:0.5rem 0.75rem;border-left:none;border-bottom:3px solid transparent;font-size:0.72rem;}.nav-item.active{border-bottom-color:var(--gold);border-left:none;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <span class="logo">CLUTTER<span>BAG</span></span>
+    <h2>Admin Dashboard</h2>
+    <div class="form-field"><label>Password</label><input type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In</button>
+    <p class="login-err" id="login-err">❌ Incorrect password. Try again.</p>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div id="admin-shell">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">CLUTTER<span>BAG</span></div>
+      <p>Admin Panel</p>
+    </div>
+    <nav>
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('orders',this)"><span class="icon">📦</span> Orders</div>
+      <div class="nav-item" onclick="showPage('products',this)"><span class="icon">🏷️</span> Products</div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page-section active" id="page-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub" id="dash-updated">Loading orders from Google Sheet...</div>
+      <div class="kpi-grid">
+        <div class="kpi gold"><label>Total Orders</label><div class="val" id="kpi-total">—</div></div>
+        <div class="kpi green"><label>Revenue (₹)</label><div class="val" id="kpi-revenue">—</div></div>
+        <div class="kpi orange"><label>Pending</label><div class="val" id="kpi-pending">—</div></div>
+        <div class="kpi blue"><label>Shipped</label><div class="val" id="kpi-shipped">—</div></div>
+        <div class="kpi purple"><label>Delivered</label><div class="val" id="kpi-delivered">—</div></div>
+      </div>
+      <div class="page-title" style="font-size:1.2rem;margin-bottom:1rem;">Recent Orders</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody id="dash-recent"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="page-section" id="page-orders">
+      <div class="page-title">All Orders</div>
+      <div class="page-sub">Click status dropdown on any row to update it live in Google Sheet.</div>
+      <div class="table-controls">
+        <input class="table-search" type="text" placeholder="Search by name, order ID, phone..." id="order-search" oninput="renderOrders()">
+        <select class="filter-select" id="status-filter" onchange="renderOrders()">
+          <option value="">All Statuses</option>
+          <option>New Order</option><option>Confirmed</option><option>Printing</option><option>Shipped</option><option>Delivered</option>
+        </select>
+        <button class="btn-refresh" onclick="loadOrders()">↻ Refresh</button>
+        <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+        <tbody id="orders-body"></tbody>
+      </table></div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="page-section" id="page-products">
+      <div class="page-title">Products</div>
+      <div class="page-sub">Edit prices and toggle stock status. Changes update immediately on the shop page.</div>
+      <div class="products-grid" id="products-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CHANGE THIS PASSWORD ──────────────────────────────────────
+const ADMIN_PASSWORD = "CLUTTERBAG2026";
+
+// ── REPLACE WITH YOUR APPS SCRIPT URL ────────────────────────
+const APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+// ── PRODUCTS (local — edit prices here or via UI) ─────────────
+let PRODUCTS = [
+  {id:1,code:"AR",flag:"🇦🇷",country:"Argentina",name:"Argentina Keyring",price:299,was:499,inStock:true},
+  {id:2,code:"BR",flag:"🇧🇷",country:"Brazil",   name:"Brazil Keyring",   price:299,was:499,inStock:true},
+  {id:3,code:"FR",flag:"🇫🇷",country:"France",   name:"France Keyring",   price:299,was:449,inStock:true},
+  {id:4,code:"PT",flag:"🇵🇹",country:"Portugal", name:"Portugal Keyring", price:299,was:449,inStock:true},
+  {id:5,code:"DE",flag:"🇩🇪",country:"Germany",  name:"Germany Keyring",  price:299,was:449,inStock:true},
+  {id:6,code:"ES",flag:"🇪🇸",country:"Spain",    name:"Spain Keyring",    price:299,was:449,inStock:true},
+  {id:7,code:"EN",flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",country:"England",  name:"England Keyring",  price:299,was:449,inStock:true},
+  {id:8,code:"IT",flag:"🇮🇹",country:"Italy",    name:"Italy Keyring",    price:299,was:449,inStock:true},
+  {id:9,code:"NL",flag:"🇳🇱",country:"Netherlands",name:"Netherlands Keyring",price:299,was:449,inStock:true},
+  {id:10,code:"BE",flag:"🇧🇪",country:"Belgium",  name:"Belgium Keyring",  price:299,was:449,inStock:true},
+  {id:11,code:"HR",flag:"🇭🇷",country:"Croatia",  name:"Croatia Keyring",  price:299,was:449,inStock:true},
+  {id:12,code:"MA",flag:"🇲🇦",country:"Morocco",  name:"Morocco Keyring",  price:299,was:449,inStock:true},
+  {id:13,code:"JP",flag:"🇯🇵",country:"Japan",    name:"Japan Keyring",    price:299,was:449,inStock:true},
+  {id:14,code:"US",flag:"🇺🇸",country:"USA",      name:"USA Keyring",      price:299,was:449,inStock:true},
+  {id:15,code:"MX",flag:"🇲🇽",country:"Mexico",   name:"Mexico Keyring",   price:299,was:449,inStock:true},
+  {id:16,code:"IN",flag:"🇮🇳",country:"India",    name:"India Special Keyring",price:349,was:500,inStock:true},
+];
+
+let allOrders = [];
+
+// ── AUTH ──────────────────────────────────────────────────────
+function doLogin(){
+  const pw = document.getElementById('pw-input').value;
+  if(pw === ADMIN_PASSWORD){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-shell').classList.add('show');
+    loadOrders();
+    renderProducts();
+  } else {
+    document.getElementById('login-err').classList.add('show');
+    document.getElementById('pw-input').value='';
+  }
+}
+function logout(){
+  document.getElementById('admin-shell').classList.remove('show');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pw-input').value='';
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function showPage(id, el){
+  document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── LOAD ORDERS FROM GOOGLE SHEET ─────────────────────────────
+async function loadOrders(){
+  document.getElementById('orders-body').innerHTML='<tr><td colspan="8" class="loading">Loading orders...</td></tr>';
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=getOrders');
+    const data = await res.json();
+    allOrders = Array.isArray(data) ? data : [];
+    renderDashboard();
+    renderOrders();
+    document.getElementById('dash-updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+  } catch(e){
+    allOrders = [];
+    document.getElementById('orders-body').innerHTML='<tr><td colspan="8" class="no-orders">⚠️ Could not load orders. Check your Apps Script URL.</td></tr>';
+    showToast('Could not connect to Google Sheet');
+  }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+function renderDashboard(){
+  const total = allOrders.length;
+  const revenue = allOrders.reduce((s,o)=>s+(parseFloat(o.grandTotal)||0),0);
+  const pending = allOrders.filter(o=>['New Order','Confirmed','Printing'].includes(o.status)).length;
+  const shipped = allOrders.filter(o=>o.status==='Shipped').length;
+  const delivered = allOrders.filter(o=>o.status==='Delivered').length;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-revenue').textContent = '₹'+revenue.toLocaleString('en-IN');
+  document.getElementById('kpi-pending').textContent = pending;
+  document.getElementById('kpi-shipped').textContent = shipped;
+  document.getElementById('kpi-delivered').textContent = delivered;
+
+  const recent = [...allOrders].reverse().slice(0,5);
+  document.getElementById('dash-recent').innerHTML = recent.length ? recent.map(o=>`
+    <tr>
+      <td style="color:var(--gold);font-weight:600">${o.orderId||'—'}</td>
+      <td>${o.name||'—'}</td>
+      <td class="wrap">${(o.items||'—').substring(0,60)}${(o.items||'').length>60?'…':''}</td>
+      <td style="color:var(--green);font-weight:600">₹${o.grandTotal||'—'}</td>
+      <td><span class="status-badge ${statusClass(o.status)}">${o.status||'—'}</span></td>
+    </tr>`).join('') : '<tr><td colspan="5" class="no-orders">No orders yet.</td></tr>';
+}
+
+// ── ORDERS TABLE ──────────────────────────────────────────────
+function renderOrders(){
+  const q = (document.getElementById('order-search').value||'').toLowerCase();
+  const sf = document.getElementById('status-filter').value;
+  const filtered = allOrders.filter(o=>{
+    const matchQ = !q || (o.orderId||'').toLowerCase().includes(q)||(o.name||'').toLowerCase().includes(q)||(o.phone||'').includes(q);
+    const matchS = !sf || o.status===sf;
+    return matchQ && matchS;
+  }).reverse();
+
+  document.getElementById('orders-body').innerHTML = filtered.length ? filtered.map((o,i)=>`
+    <tr>
+      <td style="color:var(--gold);font-weight:600">${o.orderId||'—'}</td>
+      <td style="color:var(--muted);font-size:0.75rem">${(o.timestamp||'').split(' ')[0]||'—'}</td>
+      <td>${o.name||'—'}</td>
+      <td style="color:var(--muted)">${o.phone||'—'}</td>
+      <td class="wrap">${(o.items||'—').substring(0,50)}${(o.items||'').length>50?'…':''}</td>
+      <td style="color:var(--green);font-weight:600">₹${o.grandTotal||'—'}</td>
+      <td style="color:var(--muted)">${o.paymentMethod||'—'}</td>
+      <td>
+        <select class="status-select" onchange="updateStatus('${o.orderId}',this.value)" style="border-color:${statusColor(o.status)}">
+          ${['New Order','Confirmed','Printing','Shipped','Delivered'].map(s=>`<option${s===o.status?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="8" class="no-orders">No orders match your filter.</td></tr>';
+}
+
+function statusClass(s){
+  return {
+    'New Order':'s-new','Confirmed':'s-confirmed',
+    'Printing':'s-printing','Shipped':'s-shipped','Delivered':'s-delivered'
+  }[s]||'s-new';
+}
+function statusColor(s){
+  return {'New Order':'#c9a84c','Confirmed':'#3b82f6','Printing':'#8b5cf6','Shipped':'#22c55e','Delivered':'#4ade80'}[s]||'rgba(255,255,255,0.1)';
+}
+
+// ── UPDATE STATUS IN SHEET ────────────────────────────────────
+async function updateStatus(orderId, newStatus){
+  try {
+    const url = APPS_SCRIPT_URL + '?action=updateStatus&orderId=' + encodeURIComponent(orderId) + '&status=' + encodeURIComponent(newStatus);
+    await fetch(url, {mode:'no-cors'});
+    const o = allOrders.find(x=>x.orderId===orderId);
+    if(o) o.status = newStatus;
+    renderDashboard();
+    showToast('✅ '+orderId+' → '+newStatus);
+  } catch(e){ showToast('⚠️ Could not update status'); }
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────
+function exportCSV(){
+  const headers = ['Order ID','Date','Name','Phone','Email','Address','Items','Total','Payment','Status'];
+  const rows = allOrders.map(o=>[
+    o.orderId,o.timestamp,o.name,o.phone,o.email,
+    '"'+(o.address||'').replace(/"/g,'""')+'"',
+    '"'+(o.items||'').replace(/"/g,'""')+'"',
+    o.grandTotal,o.paymentMethod,o.status
+  ].join(','));
+  const csv = [headers.join(','),...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'ClutterBag_Orders_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('📥 CSV exported!');
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────
+function renderProducts(){
+  document.getElementById('products-grid').innerHTML = PRODUCTS.map(p=>`
+    <div class="prod-card">
+      <div class="pflag">${p.flag}</div>
+      <h3>${p.name}</h3>
+      <div class="prod-price-row">
+        <span class="prod-price">₹<span id="pprice-${p.id}">${p.price}</span></span>
+        <span class="prod-was">₹${p.was}</span>
+      </div>
+      <div class="prod-edit-row">
+        <input class="prod-input" type="number" id="pinput-${p.id}" value="${p.price}" min="1" placeholder="New price">
+        <button class="btn-save-price" onclick="savePrice(${p.id})">Save</button>
+      </div>
+      <div class="stock-toggle">
+        <div class="toggle ${p.inStock?'on':''}" id="toggle-${p.id}" onclick="toggleStock(${p.id})"></div>
+        <span id="stock-label-${p.id}">${p.inStock?'In Stock':'Out of Stock'}</span>
+      </div>
+    </div>`).join('');
+}
+
+function savePrice(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const newVal = parseInt(document.getElementById('pinput-'+id).value);
+  if(!newVal||newVal<1){ showToast('⚠️ Enter a valid price'); return; }
+  p.price = newVal;
+  document.getElementById('pprice-'+id).textContent = newVal;
+  showToast('✅ '+p.name+' price updated to ₹'+newVal);
+}
+
+function toggleStock(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  p.inStock = !p.inStock;
+  document.getElementById('toggle-'+id).className = 'toggle '+(p.inStock?'on':'');
+  document.getElementById('stock-label-'+id).textContent = p.inStock?'In Stock':'Out of Stock';
+  showToast((p.inStock?'✅':'❌')+' '+p.name+' marked '+(p.inStock?'In Stock':'Out of Stock'));
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>
